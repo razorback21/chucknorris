@@ -1,0 +1,149 @@
+<html>
+ <head>
+     <title>Hours to Shakes</title>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> </head>
+    <body>
+    <div id="app"></div>
+
+    <script type="module">
+        import { app } from 'https://unpkg.com/hyperapp';
+        import html from 'https://unpkg.com/hyperlit'
+
+        function NameChange (state) {
+            return {
+                ...state,
+                uname: event.target.value
+            }
+        }
+
+        function UpdateLeft(state) {
+            let left = (((document.getElementById('right').value*1)*0.00000001)/3600);
+
+            if (!isNaN(left)) {
+                document.getElementById('left').value = Math.round(left*state.precision)/state.precision;
+            }
+
+            return {...state}
+        }
+
+        function UpdateRight(state) {
+            let right = (((document.getElementById('left').value*1)*3600)/0.00000001);
+            if (!isNaN(right)) {
+                document.getElementById('right').value = Math.round(right*state.precision)/state.precision;
+            }
+
+            return {...state}
+        }
+
+        function Save (state) {
+            let leftInput = document.getElementById('left');
+            let rightInput = document.getElementById('right');
+
+            console.log(leftInput.value, rightInput.value);
+
+            let uname = state.uname;
+            let newValue = state.history[uname] !== undefined ?
+                state.history[uname].concat({
+                    hour: leftInput.value,
+                    shakes: rightInput.value
+                }) :
+                [{hour: leftInput.value, shakes: rightInput.value}]
+
+
+            return {
+                ...state,
+                history: {
+                    ...state.history,
+                    [uname]: newValue
+                }
+            }
+        }
+
+        function Compare(state, value) {
+            return {
+                ...state,
+                compareto: value
+            }
+        }
+
+        app({
+            init: {
+                uname: '',
+                compareto: '',
+                precision: 1,
+                history: {}
+            },
+            view: state => html`
+                <div class="container">
+                    <div class="row mt-5">
+                        <div class="col-md-6">
+                            <h5>Hour(s) To Shakes</h5>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label>Name</label>
+                                    <input class="form-input form-control" type="text" id="uname" oninput=${NameChange}/>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label>Hour(s)</label>
+                                    <input class="form-control" type="number" id="left" onkeyup=${UpdateRight} onchange=${UpdateRight} />
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Shakes</label>
+                                    <input class="form-control" type="number" id="right" onkeyup=${UpdateLeft} onchange=${UpdateLeft} />
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                     <button class="btn btn-default" onclick=${Save}>Save</button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 mt-4">
+                                    <ul>
+                                        ${state.history[state.uname] && state.history[state.uname].map((value) => {
+                                            return html `<li>${value.hour}hr = ${value.shakes} shakes</li>`
+                                        })}
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <h5>Compare with History</h5>
+                            <ul class="list-unstyled mt-3">
+                                ${Object.keys(state.history).filter((uname) => {
+                                    if(uname === state.uname)
+                                        return false;
+
+                                    return true;
+                                }).map((name) => {
+                                    return html `<li><input type="radio" name="compareto" ${name === state.uname && "selected"} onchange=${[Compare, name]} /> ${name}</li>`
+                                })}
+                            </ul>
+
+                            ${state.history[state.compareto] && html `
+                                <div class="row">
+                                    <div class="col-md-12">
+                                    <hr/>
+                                    <ul>
+                                        ${state.history[state.compareto].map((value) => {
+                                            return html `<li>${value.hour}hr = ${value.shakes} shakes</li>`
+                                        })}
+                                    </ul>
+                                </div>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `,
+            node: document.getElementById('app'),
+            subscriptions: state => [
+                console.log(state)
+            ]
+        })
+
+    </script>
+    </body>
+</html>

@@ -1,0 +1,239 @@
+<html>
+ <head>
+     <title>Volume Conversions</title>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> </head>
+    <body>
+    <div id="app"></div>
+    <script src="https://cdn.jsdelivr.net/npm/convert@4/dist/convert.prod.js"></script>
+    <script type="module">
+        import { app } from 'https://unpkg.com/hyperapp';
+        import html from 'https://unpkg.com/hyperlit'
+
+        function NameChange (state) {
+            return {
+                ...state,
+                uname: event.target.value
+            }
+        }
+
+        function UpdateLeft(state) {
+            // Select Unit
+            let leftUnit =  document.getElementById('leftUnit').value;
+            let rightUnit =  document.getElementById('rightUnit').value;
+            // Text input
+            let leftInput = document.getElementById('left');
+            let rightInput = document.getElementById('right');158.98251
+            let result = '';
+
+            if (!isNaN(rightInput.value) && !isNaN(leftInput.value)) {
+                if(leftUnit === rightUnit) {
+                    leftInput.value = rightInput.value
+                } else {
+                    switch(leftUnit) {
+                        case 'L':
+                            console.log(leftInput.value/state.conversion[rightUnit].anchor);
+                            leftInput.value = (Math.round(rightInput.value/state.conversion[rightUnit].anchor * state.precision))/state.precision
+                            break;
+                        case 'bbl':
+                            console.log(leftInput.value/state.conversion[rightUnit].anchor);
+                            leftInput.value = (Math.round(rightInput.value*state.conversion[leftUnit].anchor * state.precision))/state.precision
+                            break;
+                    }
+                }
+            }
+
+            let leftValue =  leftInput.value + ' ' +leftUnit
+            let rightValue = rightInput.value + ' '+rightUnit
+            let conversion = `${leftValue} ${leftUnit} = ${rightValue} ${rightUnit}`
+            return {
+                ...state,
+                result: conversion
+            }
+        }
+
+        function UpdateRight(state) {
+            // Select Unit
+            let leftUnit =  document.getElementById('leftUnit').value;
+            let rightUnit =  document.getElementById('rightUnit').value;
+            // Text input
+            let leftInput = document.getElementById('left');
+            let rightInput = document.getElementById('right');
+
+            if (!isNaN(rightInput.value) && !isNaN(leftInput.value)) {
+
+                if(leftUnit === rightUnit) {
+                    rightInput.value = leftInput.value
+                } else {
+                    switch(rightUnit) {
+                        case 'L':
+                            rightInput.value = (Math.round(leftInput.value/state.conversion[leftUnit].anchor * state.precision))/state.precision
+                            break;
+                        case 'bbl':
+                            rightInput.value = (Math.round(leftInput.value*state.conversion[rightUnit].anchor * state.precision))/state.precision
+                        break;
+                    }
+                }
+
+            }
+
+            return {...state}
+        }
+
+
+        function convert(state) {
+            // Select Unit
+            let leftUnit =  document.getElementById('leftUnit').value;
+            let rightUnit =  document.getElementById('rightUnit').value;
+            // Text input
+            let leftInput = document.getElementById('left');
+            let rightInput = document.getElementById('right');
+
+            let leftValue =  leftInput.value + ' ' +leftUnit
+            let rightValue = rightInput.value + ' '+rightUnit
+            let result = `${leftValue} = ${rightValue}`
+
+            return result;
+        }
+
+
+        function SaveResult (state) {
+            let result = convert(state);
+            let uname = state.uname;
+
+            let newValue = state.history[uname] !== undefined ?
+                state.history[uname].concat({
+                    result: result,
+                }) :
+                [{result: result}]
+
+
+            return {
+                ...state,
+                history: {
+                    ...state.history,
+                    [uname]: newValue
+                }
+            }
+        }
+
+        function Compare(state, value) {
+            return {
+                ...state,
+                compareto: value
+            }
+        }
+
+
+        function units(state) {
+            let units = {}
+
+            Object.keys(state.conversion).forEach((key) => {
+                if(key !== 'mL')
+                    units[key] = state.conversion[key].name;
+            })
+            return units
+        }
+
+         app({
+            init: {
+                uname: '',
+                compareto: '',
+                precision: 100000,
+                history: {},
+                result: '',
+                conversion: {
+                  mL: { anchor: 1000, name: 'Mililiters'},
+                  L : { anchor: 1, name: 'Liters' },
+                  bbl: { anchor: 0.00629, name: 'Barrels'}
+                }
+
+            },
+            view: state => html`
+                <main>
+                    <div class="container">
+                        <div class="row mt-5">
+                            <div class="col-md-6">
+                                <h5>Volume Conversions</h5>
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label>Name</label>
+                                        <input class="form-input form-control" type="text" id="uname" oninput=${NameChange}/>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <select id="leftUnit" class="form-control" onchange=${UpdateRight}>
+                                            ${Object.keys(units(state)).map((value) => {
+                                                return html `<option value=${value}>${units(state)[value]}</option>`
+                                            })}
+                                        </select>
+                                        <input class="form-control mt-2" type="number" id="left" onkeyup=${UpdateRight} onchange=${UpdateRight} />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select id="rightUnit" class="form-control" onchange=${UpdateLeft}>
+                                            ${Object.keys(units(state)).map((value) => {
+                                                return html `<option value=${value}>${units(state)[value]}</option>`
+                                            })}
+                                        </select>
+                                        <input class="form-control mt-2" type="number" id="right" onkeyup=${UpdateLeft} onchange=${UpdateLeft} />
+                                    </div>
+                                    <div class="col-md-12 mt-3">
+                                         <button class="btn btn-default" onclick=${SaveResult}>Save Result</button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 mt-4">
+                                        <ul>
+                                            ${state.history[state.uname] && state.history[state.uname].map((value) => {
+                                                return html `<li>${value.result}</li>`
+                                            })}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5>Compare with History</h5>
+                                <ul class="list-unstyled mt-3">
+                                    ${Object.keys(state.history).filter((uname) => {
+                                        if(uname === state.uname)
+                                            return false;
+
+                                        return true;
+                                    }).map((name) => {
+                                        return html `<li><input type="radio" name="compareto" ${name === state.uname && "selected"} onchange=${[Compare, name]} /> ${name}</li>`
+                                    })}
+                                </ul>
+
+                                ${state.history[state.compareto] && html `
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                        <hr/>
+                                        <ul>
+                                            ${state.history[state.compareto].map((value) => {
+                                                return html `<li>${value.result}</li>`
+                                            })}
+                                        </ul>
+                                    </div>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="col-md-12 text-center">
+                            <p><small>I'm sorry Scott. This is the first time I have heared about Barn-Megaparsec and I need more time to research about it.</small></p>
+                        </div>
+                    </div>
+                </main>
+            `,
+            node: document.getElementById('app'),
+            subscriptions: state => [
+                console.log(state)
+            ]
+        })
+
+    </script>
+    </body>
+</html>
