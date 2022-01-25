@@ -31,12 +31,19 @@
                 } else {
                     switch(rightUnit) {
                         case 'L':
-                            rightInput.value = (Math.round((leftInput.value/state.conversion[leftUnit].anchor) * 1000 * state.precision))/state.precision
+                            console.log('rightUnit L');
+                            if(leftUnit == 'bMpc') {
+                                rightInput.value = (Math.round((leftInput.value*state.conversion[rightUnit].anchor) /1000 * 3/1000  * state.precision))/state.precision
+                            } else {
+                                rightInput.value = (Math.round((leftInput.value/state.conversion[leftUnit].anchor) * 1000 * state.precision))/state.precision
+                            }
                             break;
                         case 'bbl':
+                            console.log('rightUnit bbl');
                             rightInput.value = (Math.round((leftInput.value*state.conversion[rightUnit].anchor) /1000 * state.precision))/state.precision
                             break;
                         case 'bMpc':
+                            console.log('rightUnit bMpc');
                             rightInput.value = (Math.round((3/state.conversion[leftUnit].anchor * leftInput.value) * state.precision))/state.precision
                             break;
                     }
@@ -62,12 +69,19 @@
                 } else {
                     switch(leftUnit) {
                         case 'L':
-                            leftInput.value = (Math.round((rightInput.value/state.conversion[rightUnit].anchor) * 1000 * state.precision))/state.precision
+                            console.log('UpdateLeft L');
+                            if(rightUnit == 'bMpc') {
+                                leftInput.value = (Math.round((rightInput.value*state.conversion[leftUnit].anchor) /1000 * 3/1000  * state.precision))/state.precision
+                            } else {
+                                leftInput.value = (Math.round((rightInput.value/state.conversion[rightUnit].anchor) * 1000 * state.precision))/state.precision
+                            }
                             break;
                         case 'bbl':
+                            console.log('UpdateLeft bbl');
                             leftInput.value = (Math.round((rightInput.value*state.conversion[leftUnit].anchor) /1000  * state.precision))/state.precision
                             break;
                         case 'bMpc':
+                            console.log('UpdateLeft bMpc');
                             leftInput.value = (Math.round((3/state.conversion[rightUnit].anchor * rightInput.value) * state.precision))/state.precision
                             break;
                     }
