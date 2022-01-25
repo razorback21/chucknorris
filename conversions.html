@@ -31,7 +31,7 @@
                 } else {
                     switch(rightUnit) {
                         case 'L':
-                            console.log('rightUnit L');
+                            console.log('UpdateRight L');
                             if(leftUnit == 'bMpc') {
                                 rightInput.value = (Math.round((leftInput.value*state.conversion[rightUnit].anchor) /1000 * 3/1000  * state.precision))/state.precision
                             } else {
@@ -39,11 +39,15 @@
                             }
                             break;
                         case 'bbl':
-                            console.log('rightUnit bbl');
-                            rightInput.value = (Math.round((leftInput.value*state.conversion[rightUnit].anchor) /1000 * state.precision))/state.precision
+                            console.log('UpdateRight bbl');
+                            if(leftUnit == 'bMpc') {
+                                rightInput.value = (Math.round((leftInput.value*state.conversion[rightUnit].anchor) /1000 * 2/1000 * state.precision))/state.precision // untested
+                            } else {
+                                rightInput.value = (Math.round((leftInput.value*state.conversion[rightUnit].anchor) /1000 * state.precision))/state.precision
+                            }
                             break;
                         case 'bMpc':
-                            console.log('rightUnit bMpc');
+                            console.log('UpdateRight bMpc');
                             rightInput.value = (Math.round((3/state.conversion[leftUnit].anchor * leftInput.value) * state.precision))/state.precision
                             break;
                     }
@@ -78,7 +82,11 @@
                             break;
                         case 'bbl':
                             console.log('UpdateLeft bbl');
-                            leftInput.value = (Math.round((rightInput.value*state.conversion[leftUnit].anchor) /1000  * state.precision))/state.precision
+                            if(rightUnit == 'bMpc') {
+                                leftInput.value = (Math.round((rightInput.value*state.conversion[leftUnit].anchor) /1000 * 2/1000 * state.precision))/state.precision // untested
+                            } else {
+                                leftInput.value = (Math.round((rightInput.value*state.conversion[leftUnit].anchor) /1000  * state.precision))/state.precision
+                            }
                             break;
                         case 'bMpc':
                             console.log('UpdateLeft bMpc');
