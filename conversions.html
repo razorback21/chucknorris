@@ -31,10 +31,13 @@
                 } else {
                     switch(rightUnit) {
                         case 'L':
-                            rightInput.value = (Math.round(leftInput.value/state.conversion[leftUnit].anchor * state.precision))/state.precision
+                            rightInput.value = (Math.round((leftInput.value/state.conversion[leftUnit].anchor) * 1000 * state.precision))/state.precision
                             break;
                         case 'bbl':
-                            rightInput.value = (Math.round(leftInput.value*state.conversion[rightUnit].anchor * state.precision))/state.precision
+                            rightInput.value = (Math.round((leftInput.value*state.conversion[rightUnit].anchor) /1000 * state.precision))/state.precision
+                            break;
+                        case 'bMpc':
+                            rightInput.value = (Math.round((3/state.conversion[leftUnit].anchor * leftInput.value) * state.precision))/state.precision
                             break;
                     }
                 }
@@ -50,7 +53,7 @@
             let rightUnit =  document.getElementById('rightUnit').value;
             // Text input
             let leftInput = document.getElementById('left');
-            let rightInput = document.getElementById('right');158.98251
+            let rightInput = document.getElementById('right');
             let result = '';
 
             if (!isNaN(rightInput.value) && !isNaN(leftInput.value)) {
@@ -59,12 +62,13 @@
                 } else {
                     switch(leftUnit) {
                         case 'L':
-                            console.log(leftInput.value/state.conversion[rightUnit].anchor);
-                            leftInput.value = (Math.round(rightInput.value/state.conversion[rightUnit].anchor * state.precision))/state.precision
+                            leftInput.value = (Math.round((rightInput.value/state.conversion[rightUnit].anchor) * 1000 * state.precision))/state.precision
                             break;
                         case 'bbl':
-                            console.log(leftInput.value/state.conversion[rightUnit].anchor);
-                            leftInput.value = (Math.round(rightInput.value*state.conversion[leftUnit].anchor * state.precision))/state.precision
+                            leftInput.value = (Math.round((rightInput.value*state.conversion[leftUnit].anchor) /1000  * state.precision))/state.precision
+                            break;
+                        case 'bMpc':
+                            leftInput.value = (Math.round((3/state.conversion[rightUnit].anchor * rightInput.value) * state.precision))/state.precision
                             break;
                     }
                 }
@@ -141,9 +145,10 @@
                 history: {},
                 result: '',
                 conversion: {
-                  mL: { anchor: 1000, name: 'Mililiters'},
-                  L : { anchor: 1, name: 'Liters' },
-                  bbl: { anchor: 0.00629, name: 'Barrels'}
+                  mL: { anchor: 0.001, name: 'Mililiters'},
+                  L : { anchor: 1000, name: 'Liters' },
+                  bbl: { anchor: 6.29, name: 'Barrels'},
+                  bMpc: { anchor: 0.003, name: 'Barn-megaparsec'}
                 }
 
             },
