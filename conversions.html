@@ -16,6 +16,34 @@
             }
         }
 
+        function UpdateRight(state) {
+            // Select Unit
+            let leftUnit =  document.getElementById('leftUnit').value;
+            let rightUnit =  document.getElementById('rightUnit').value;
+            // Text input
+            let leftInput = document.getElementById('left');
+            let rightInput = document.getElementById('right');
+
+            if (!isNaN(rightInput.value) && !isNaN(leftInput.value)) {
+
+                if(leftUnit === rightUnit) {
+                    rightInput.value = leftInput.value
+                } else {
+                    switch(rightUnit) {
+                        case 'L':
+                            rightInput.value = (Math.round(leftInput.value/state.conversion[leftUnit].anchor * state.precision))/state.precision
+                            break;
+                        case 'bbl':
+                            rightInput.value = (Math.round(leftInput.value*state.conversion[rightUnit].anchor * state.precision))/state.precision
+                            break;
+                    }
+                }
+
+            }
+
+            return {...state}
+        }
+
         function UpdateLeft(state) {
             // Select Unit
             let leftUnit =  document.getElementById('leftUnit').value;
@@ -50,35 +78,6 @@
                 result: conversion
             }
         }
-
-        function UpdateRight(state) {
-            // Select Unit
-            let leftUnit =  document.getElementById('leftUnit').value;
-            let rightUnit =  document.getElementById('rightUnit').value;
-            // Text input
-            let leftInput = document.getElementById('left');
-            let rightInput = document.getElementById('right');
-
-            if (!isNaN(rightInput.value) && !isNaN(leftInput.value)) {
-
-                if(leftUnit === rightUnit) {
-                    rightInput.value = leftInput.value
-                } else {
-                    switch(rightUnit) {
-                        case 'L':
-                            rightInput.value = (Math.round(leftInput.value/state.conversion[leftUnit].anchor * state.precision))/state.precision
-                            break;
-                        case 'bbl':
-                            rightInput.value = (Math.round(leftInput.value*state.conversion[rightUnit].anchor * state.precision))/state.precision
-                        break;
-                    }
-                }
-
-            }
-
-            return {...state}
-        }
-
 
         function convert(state) {
             // Select Unit
