@@ -38,7 +38,7 @@
                             break;
                         case 'bbl':
                             if(leftUnit == 'bMpc') {
-                                rightInput.value = (Math.round((leftInput.value*(state.conversion[leftUnit].anchor * state.conversion[rightUnit].anchor)) /1000 * state.precision))/state.precision // untested
+                                rightInput.value = (Math.round((leftInput.value*(state.conversion[leftUnit].anchor * state.conversion[rightUnit].anchor)) /1000 * state.precision))/state.precision
                             } else {
                                 rightInput.value = (Math.round((leftInput.value*state.conversion[rightUnit].anchor) /1000 * state.precision))/state.precision
                             }
@@ -77,8 +77,7 @@
                             break;
                         case 'bbl':
                             if(rightUnit == 'bMpc') {
-                                //leftInput.value = (Math.round((rightInput.value*state.conversion[leftUnit].anchor) /1000 * 2/1000 * state.precision))/state.precision // untested
-                                leftInput.value = (Math.round((rightInput.value*(state.conversion[rightUnit].anchor *state.conversion[leftUnit].anchor)) /1000 * state.precision))/state.precision // untested
+                                leftInput.value = (Math.round((rightInput.value*(state.conversion[rightUnit].anchor * state.conversion[leftUnit].anchor)) /1000 * state.precision))/state.precision
 
                             } else {
                                 leftInput.value = (Math.round((rightInput.value*state.conversion[leftUnit].anchor) /1000  * state.precision))/state.precision
