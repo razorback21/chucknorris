@@ -78,7 +78,6 @@
                         case 'bbl':
                             if(rightUnit == 'bMpc') {
                                 leftInput.value = (Math.round((rightInput.value*(state.conversion[rightUnit].anchor * state.conversion[leftUnit].anchor)) /1000 * state.precision))/state.precision
-
                             } else {
                                 leftInput.value = (Math.round((rightInput.value*state.conversion[leftUnit].anchor) /1000  * state.precision))/state.precision
                             }
